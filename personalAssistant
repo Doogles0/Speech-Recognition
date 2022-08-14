@@ -1,0 +1,236 @@
+import speech_recognition as sr
+import pyttsx3
+from PyDictionary import PyDictionary
+from datetime import datetime
+import os
+import subprocess
+import python_weather
+
+dictionary = PyDictionary()
+
+again = True
+word = ""
+text = ""
+keyWord = False
+alwaysOn = False
+# speaking setup
+engine = pyttsx3.init()
+engine.setProperty('rate', 95)
+engine.setProperty('volume', 1.0)
+
+
+# Dictionary
+def define(word):
+    print(dictionary.meaning(word))
+    engine.say(dictionary.meaning(word))
+    engine.runAndWait()
+
+
+def synonym(word):
+    print(dictionary.synonym(word))
+    engine.say(dictionary.synonym(word))
+    engine.runAndWait()
+
+
+def antonym(word):
+    print(dictionary.antonym(word))
+    engine.say(dictionary.antonym(word))
+    engine.runAndWait()
+
+
+# dictionary of greeting. format = use (ie introduction, closing)/time(ie morning, afternoon, evening, night, neutral)
+word_dict = {"hello": "introduction, neutral", "good morning": "mintroduction, morning", }
+# dictionary of responses. takes input. gives random output
+word_response = {"introduction, neutral": "hello, hi, good day", "introduction, time": "good time, time, good time sir"}
+
+
+# math
+# date
+# joke
+def joke():
+    print("I don't know a joke yet")
+    engine.say("I don't know a joke yet")
+    engine.runAndWait()
+
+
+# eventually always have true, key word to begin it, say something, then returns back
+"""
+while (again = True):
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            # read the audio data from the default microphone
+            audio_data = r.record(source, duration=5)
+            print("Recognizing...")
+            # convert speech to text
+            try:
+                text = r.recognize_google(audio_data)
+            except:
+                continue
+            print(text)
+            text = text.lower()
+            if (keyword = False):
+                #run
+            elif("data" in text and keyword = True):
+
+            else:
+                #dont run
+"""
+while (again == True):
+    text = ""
+    # initialize the recognizer
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        # read the audio data from the default microphone
+        audio_data = r.record(source, duration=5)
+        # convert speech to text
+        try:
+            text = r.recognize_google(audio_data)
+        except:
+            again = True
+            pass
+        text = text.lower()
+        if ("data" in text or keyWord == False):
+            # words
+            text = text.lower()
+            if ("data" in text):
+                text.strip(text.split()[0])
+                print(text)
+            # dictionary functions
+            # noinspection PyUnreachableCode
+            if (text != ""):
+                if (text.split()[0] == "define"):
+                    word = text[7:len(text)]
+                    define(word)
+                elif ("synonym" in text):
+                    word = text.split()[-1]
+                    synonym(word)
+                elif ("antonym" in text):
+                    word = text.split()[-1]
+                    antonym(word)
+                # math
+                elif (text.split()[0] == "add"):
+                    word = int(text.split()[1]) - int(text.split()[len(text.split) - 1])
+                    engine.say(word)
+                    engine.runAndWait()
+                elif (text.split()[0] == "minus" or text.split()[0] == "subtract"):
+                    word = int(text.split()[1]) + int(text.split[len(text.split) - 1])
+                    engine.say(word)
+                    engine.runAndWait()
+                elif (text.split()[0] == "multiply"):
+                    word = int(text.split()[1]) * int(text.split()[len(text.split) - 1])
+                    engine.say(word)
+                    engine.runAndWait()
+                elif (text.split()[0] == "divide"):
+                    word = int(text.split()[1]) / int(text.split()[len(text.split) - 1])
+                    engine.say(word)
+                    engine.runAndWait()
+                # date
+                elif ("what" in text and "date" in text):
+                    datetime_object = datetime.now()
+                    date = str(datetime_object)
+                    date.strip()
+                    year = date[0:4]
+                    month = int(date[5:7])
+                    day = date[8:10]
+                    if month == 1:
+                        month = "january"
+                    elif month == 2:
+                        month = "febuary"
+                    elif month == 3:
+                        month = "march"
+                    elif month == 4:
+                        month = "april"
+                    elif month == 5:
+                        month = "may"
+                    elif month == 6:
+                        month = "june"
+                    elif month == 7:
+                        month = "july"
+                    elif month == 8:
+                        month = "august"
+                    elif month == 9:
+                        month = "spetember"
+                    elif month == 10:
+                        month = "october"
+                    elif month == 11:
+                        month = "november"
+                    elif month == 12:
+                        month = "december"
+                    date = (day, "of", month, year)
+                    engine.say(date)
+                    engine.runAndWait()
+
+                # stock
+                # jokes
+                elif ("tell joke" in text):
+                    joke()
+                # in capable of laughter
+                # running options
+                elif ("always on" in text):
+                    again = True  # constant repeat, no keyWord needed
+                    keyWord = False
+                    alwaysOn = True
+                elif ("keyword on" in text):
+                    keyword = True
+                    alwaysOn = False
+                elif ("end program" in text or "terminate" in text):
+                    again = False
+                elif ("weather" in text and "what" in text):
+                    pass  # json request needed for weather import
+                elif ("forcast" in text and "what" in text):
+                    pass  # json request needed for weather import
+                elif ("information" in text and "get" in text):
+                    engine.say(os.getlogin())
+                    engine.runAndWait()
+                elif ("enable" in text and "typer" in text):
+                    pass
+                elif (text.split()[0] == "open"):
+                    if ("steam" in text):
+                        subprocess.Popen("C:\Program Files (x86)\Steam\steam\Steam.exe")
+                    elif ("chrome" in text):
+                        subprocess.Popen("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe")
+                    elif ("school" in text):
+                        try:
+                            # subprocess.Popen("C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE")
+                            subprocess.Popen("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe")
+                            # subprocess.run()
+                        except:
+                            pass
+
+                elif ("set" and "rate" in text):
+                    try:
+                        if (text.split()[2] == "low"):
+                            engine.setProperty('rate', 95)
+                        elif (text.split()[2] == "medium"):
+                            engine.setProperty('rate', 108)
+                        elif (text.split()[2] == "High"):
+                            engine.setProperty('rate', 120)
+                    except:
+                        pass
+                elif ("keyword" and "on" in text):
+                    keyWord = True
+                elif ("introduce" in text):
+                    word = "Hello, this is owen"
+                    engine.say(word)
+                    engine.runAndWait()
+                elif ("test" in text):
+                    word = "testing"
+                    engine.say(word)
+                    engine.runAndWait()
+
+                # closing
+                else:
+                    print("returned")
+                    again = True
+                    if alwaysOn == True:
+                        pass
+                    else:
+                        keyword = True
+# future add-ons
+# engine.save_to_file('Hello World' , 'test.mp3') - save last thing said, can be used to repeat
+if (again == False):
+    print("terminating")
+    engine.say("turning off, thank you")
+    engine.stop()
+
+# netsh wlan show profile Students key=clear
